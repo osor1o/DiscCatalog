@@ -1,18 +1,16 @@
 package model;
 
-import valueObject.Name;
-import valueObject.Year;
-
 public class Disc extends Model {
-	private Name name;
+	private String name;
 	private Band band;
-	private Categorie[] categories;
-	private Year releaseYear;
+	private int year;
+	private Music[] musics;
 	
-	public Disc(Name name, Band band, Categorie[] categories, Year releaseYear) {
+	public Disc(int id, String name, Band band, int year, Music[] musics) {
+		this.id = id;
 		this.name = name;
 		this.band = band;
-		this.categories = categories;
-		this.releaseYear = releaseYear;
+		this.year = year;
+		this.musics = musics;
 	}
 }

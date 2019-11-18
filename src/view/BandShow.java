@@ -17,8 +17,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JList;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
-public class DiscShow extends JFrame {
+public class BandShow extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
@@ -42,39 +43,29 @@ public class DiscShow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public DiscShow() {
+	public BandShow() {
 		
 		this.setResizable(false);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 205);
-		
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-		
-		JMenu mnNewMenu = new JMenu("Menu");
-		menuBar.add(mnNewMenu);
-		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Discos");
-		mnNewMenu.add(mntmNewMenuItem);
-		
-		JMenuItem menuItem = new JMenuItem("Bandas");
-		mnNewMenu.add(menuItem);
-		
-		JMenuItem mntmMusicas = new JMenuItem("Musicas");
-		mnNewMenu.add(mntmMusicas);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel band = new JLabel("Nome: xxxxx, ano 2019");
-		band.setBounds(12, 12, 773, 15);
+		JLabel band = new JLabel("Nome da banda");
+		band.setBounds(12, 12, 687, 15);
 		contentPane.add(band);
 		
 		JLabel musics = new JLabel("Musicas");
 		musics.setBounds(12, 39, 773, 15);
 		contentPane.add(musics);
+		
+		JLabel lblAno = new JLabel("ano 2019");
+		lblAno.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblAno.setBounds(711, 12, 74, 15);
+		contentPane.add(lblAno);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(12, 66, 773, 75);
