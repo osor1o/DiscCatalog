@@ -1,48 +1,102 @@
 package view;
 
 import javax.swing.JFrame;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JTextField;
+
+import dao.MusicDAO;
+import model.Band;
+import model.Music;
+
 import javax.swing.JLabel;
 
 public class MusicAddEdit extends JFrame {
-	private JTextField textField;
-	private JTextField textField_1;
+	private static MusicAddEdit instance;
+	private Music music;
+	private Band band;
+	private JLabel lblBand;
+	private JButton btnAddEdit;
+	private JTextField name;
+	private JTextField year;
+	private Listener listener = new Listener();
 
-	public MusicAddEdit() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 400, 257);
+	public static MusicAddEdit getInstance() {
+		if(instance == null) {
+			instance = new MusicAddEdit();
+		}
+		return instance;
+	}
+	
+	private MusicAddEdit() {
+		setResizable(false);
+		setBounds(100, 100, 400, 216);
 		getContentPane().setLayout(null);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(12, 39, 372, 24);
-		getContentPane().add(comboBox);
+		name = new JTextField();
+		name.setBounds(12, 66, 372, 19);
+		getContentPane().add(name);
+		name.setColumns(10);
 		
-		textField = new JTextField();
-		textField.setBounds(12, 102, 372, 19);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		year = new JTextField();
+		year.setColumns(10);
+		year.setBounds(12, 124, 372, 19);
+		getContentPane().add(year);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(12, 160, 372, 19);
-		getContentPane().add(textField_1);
-		
-		JLabel lblBand = new JLabel("Banda");
+		lblBand = new JLabel("Banda");
 		lblBand.setBounds(12, 12, 66, 15);
 		getContentPane().add(lblBand);
 		
 		JLabel lblName = new JLabel("Nome");
-		lblName.setBounds(12, 75, 66, 15);
+		lblName.setBounds(12, 39, 66, 15);
 		getContentPane().add(lblName);
 		
 		JLabel lblYear = new JLabel("Ano");
-		lblYear.setBounds(12, 133, 66, 15);
+		lblYear.setBounds(12, 97, 66, 15);
 		getContentPane().add(lblYear);
 		
-		JButton btnAdicionar = new JButton("Adicionar");
-		btnAdicionar.setBounds(270, 191, 114, 25);
-		getContentPane().add(btnAdicionar);
+		btnAddEdit = new JButton("Adicionar");
+		btnAddEdit.setBounds(270, 155, 114, 25);
+		getContentPane().add(btnAddEdit);
+		btnAddEdit.addActionListener(listener);
+	}
+	
+	public void setMusic(Music m) {
+		music = m;
+		if(m != null) {
+			setTitle("Editar Musica");
+			btnAddEdit.setText("Editar");
+			name.setText(m.getName());
+			year.setText(String.valueOf(m.getYear()));
+			lblBand.setText(m.getBand().getName());
+		} else {
+			setTitle("Adicionar Musica");
+			btnAddEdit.setText("Adicionar");
+			name.setText("");
+			year.setText("");
+			lblBand.setText("");
+		}
+	}
+	
+	public void setBand(Band b) {
+		band = b;
+	}
+	
+	private class Listener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(music == null) {
+				MusicDAO.add(name.getText(), Integer.parseInt(year.getText()), band);
+			} else {
+				MusicDAO.edit(music.getId(), name.getText(), Integer.parseInt(year.getText()), music.getBand());
+			}
+			setVisible(false);
+			MusicList.getInstance().refreshTableData();
+		}
+		
 	}
 }

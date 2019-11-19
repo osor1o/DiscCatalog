@@ -12,6 +12,20 @@ import model.Music;
 
 public class MusicDAO extends DAO {
 	
+	public static void add(String name, int year, Band b) {
+		try {
+			String sql = "INSERT INTO Music (name, year, band) VALUES (?, ?, ?)";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, name);
+			stmt.setInt(2, year);
+			stmt.setInt(3, b.getId());
+			stmt.execute();
+			JOptionPane.showMessageDialog(null, "Música adicionada com sucesso!");
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null, "Não foi possível adicionar a música!");
+		}
+	}
+	
 	public static ArrayList<Music> list(Band b)  {		
 		try {
 			String sql = "SELECT * FROM Music, Band WHERE Music.band = Band.id AND band = ? ORDER BY Music.name ASC";
@@ -38,10 +52,34 @@ public class MusicDAO extends DAO {
 			}
 			return musics;
 		} catch(SQLException e) {
-			System.out.println(e);
 			JOptionPane.showMessageDialog(null, "Não foi possível buscar músicas!");
 			return null;
 		}
 	}
 	
+	public static void edit(int id, String name, int year, Band b) {
+		try {
+			String sql = "UPDATE Music SET name = ?, year = ?, band = ? WHERE id = ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, name);
+			stmt.setInt(2, year);
+			stmt.setInt(3, b.getId());
+			stmt.setInt(4, id);
+			stmt.execute();
+			JOptionPane.showMessageDialog(null, "Música editada com sucesso!");
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null, "Não foi possível editar a música!");
+		}
+	}
+	
+	public static void remove(int id) {
+		try {
+			PreparedStatement stmt = conn.prepareStatement("DELETE FROM Music WHERE id = ?");
+			stmt.setInt(1, id);
+			stmt.execute();
+			JOptionPane.showMessageDialog(null, "Música removida com sucesso!");
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null, "Não foi possível remover a música!");
+		}
+	}
 }

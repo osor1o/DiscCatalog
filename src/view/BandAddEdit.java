@@ -21,7 +21,7 @@ public class BandAddEdit extends JFrame {
 	private Band band;
 	private ActionListener listener = new Listener();
 	
-	public static BandAddEdit getInstence() {
+	public static BandAddEdit getInstance() {
 		if(instance == null) {
 			instance = new BandAddEdit();
 		}
@@ -76,7 +76,6 @@ public class BandAddEdit extends JFrame {
 			name.setText("");
 			year.setText("");
 		}
-		
 	}
 	
 	private class Listener implements ActionListener {
@@ -87,7 +86,7 @@ public class BandAddEdit extends JFrame {
 				BandDAO.edit(band.getId(), name.getText(), Integer.parseInt(year.getText()));
 			}
 			setVisible(false);
-			BandList.getInstence().refreshData();
+			BandList.getInstance().refreshData();
 		}
 	}
 }

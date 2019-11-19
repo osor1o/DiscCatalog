@@ -26,7 +26,7 @@ public class BandList extends JFrame {
 	private JButton btnRemove;
 	private Listener listener = new Listener();
 	
-	public static BandList getInstence() {
+	public static BandList getInstance() {
 		if(instance == null) {
 			instance = new BandList();
 		}
@@ -75,7 +75,7 @@ public class BandList extends JFrame {
 			int row = table.getSelectedRow();
 			
 			if(e.getSource() == btnAdd) {
-				BandAddEdit addFrame = BandAddEdit.getInstence();
+				BandAddEdit addFrame = BandAddEdit.getInstance();
 				addFrame.setBand(null);
 				addFrame.setVisible(true);
 			}
@@ -86,7 +86,7 @@ public class BandList extends JFrame {
 					String name = table.getValueAt(row, 1).toString();
 					int year = Integer.parseInt(table.getValueAt(row, 2).toString());
 					Band band = new Band(id, name, year);
-					BandAddEdit editFrame = BandAddEdit.getInstence();
+					BandAddEdit editFrame = BandAddEdit.getInstance();
 					editFrame.setBand(band);
 					editFrame.setVisible(true);
 				}

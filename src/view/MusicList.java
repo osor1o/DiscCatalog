@@ -26,8 +26,13 @@ public class MusicList extends JFrame {
 	private static MusicList instance;
 	private JPanel contentPane;
 	private JTable table;
+	private Music music;
 	private Band band;
-	private JComboBox<String> comboBand;
+	private JComboBox<Band> comboBand;
+	private JButton btnAdd;
+	private JButton btnEdit;
+	private JButton btnRemove;
+	private Listener listener = new Listener();
 	
 	public static MusicList getInstance() {
 		if(instance == null) {
@@ -37,9 +42,9 @@ public class MusicList extends JFrame {
 	}
 	
 	private MusicList() {
+		setResizable(false);
 		setTitle("Músicas");
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 801, 331);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -55,23 +60,28 @@ public class MusicList extends JFrame {
 		
 		scrollPane.setViewportView(table);
 		
-		JButton btnAdicionar = new JButton("Adicionar");
-		btnAdicionar.setBounds(418, 267, 114, 25);
-		contentPane.add(btnAdicionar);
+		btnAdd = new JButton("Adicionar");
+		btnAdd.setBounds(418, 267, 114, 25);
+		contentPane.add(btnAdd);
+		btnAdd.addActionListener(listener);
 		
-		JButton btnRemover = new JButton("Remover");
-		btnRemover.setBounds(670, 267, 114, 25);
-		contentPane.add(btnRemover);
+		btnEdit = new JButton("Editar");
+		btnEdit.setBounds(544, 267, 114, 25);
+		contentPane.add(btnEdit);
+		btnEdit.addActionListener(listener);
 		
-		JButton btnEditar = new JButton("Editar");
-		btnEditar.setBounds(544, 267, 114, 25);
-		contentPane.add(btnEditar);
+		btnRemove = new JButton("Remover");
+		btnRemove.setBounds(670, 267, 114, 25);
+		contentPane.add(btnRemove);
+		btnRemove.addActionListener(listener);
 		
-		comboBand = new JComboBox<String>();
+		comboBand = new JComboBox<Band>();
 		comboBand.setBounds(12, 39, 772, 24);
 		contentPane.add(comboBand);
+		comboBand.addActionListener(listener);
 		
-		refreshData();
+		refreshTableData();
+		refreshComboBoxData();
 		
 		JLabel lblBanda = new JLabel("Banda");
 		lblBanda.setBounds(12, 12, 66, 15);
@@ -82,7 +92,7 @@ public class MusicList extends JFrame {
 		contentPane.add(lblMusicas);
 	}
 	
-	public void refreshData() {
+	public void refreshTableData() {
 		String[] columns = {"id", "Nome", "Ano"};
 		DefaultTableModel tableModel = new DefaultTableModel(null, columns);
 		
@@ -95,18 +105,56 @@ public class MusicList extends JFrame {
 			};
 			tableModel.addRow(row);
 		}
-		
-		tableModel.fireTableDataChanged();
 		table.setModel(tableModel);
-		
+	}
+	
+	public void refreshComboBoxData() {
 		ArrayList<Band> bands = BandDAO.list();
-		ArrayList<String> bandsName = new ArrayList<String>();
-		
+		comboBand.removeAllItems();
 		for(Band b : bands) {
-			bandsName.add(b.getId() +" - " + b.getName());
+			comboBand.addItem(b);
+		}
+	}
+	
+	private class Listener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int row = table.getSelectedRow();
+			
+			if(e.getSource() == comboBand) {
+				band = (Band) comboBand.getSelectedItem();
+				refreshTableData();
+			}
+			
+			if(e.getSource() == btnAdd) {
+				MusicAddEdit addFrame = MusicAddEdit.getInstance();
+				addFrame.setMusic(null);
+				addFrame.setBand(band);
+				addFrame.setVisible(true);
+			}
+			
+			if(e.getSource() == btnEdit) {
+				if(row != -1) {
+					int id = Integer.parseInt(table.getValueAt(row, 0).toString());
+					String name = table.getValueAt(row, 1).toString();
+					int year = Integer.parseInt(table.getValueAt(row, 2).toString());
+					Music music = new Music(id, name, year, band);
+					MusicAddEdit editFrame = MusicAddEdit.getInstance();
+					editFrame.setMusic(music);
+					editFrame.setBand(null);
+					editFrame.setVisible(true);
+				}
+			}
+			
+			if(e.getSource() == btnRemove) {
+				if(row != -1) {
+					int id = Integer.parseInt(table.getValueAt(row, 0).toString());
+					MusicDAO.remove(id);
+					refreshTableData();
+				}
+			}
 		}
 		
-		DefaultComboBoxModel<String> comboModel = new DefaultComboBoxModel<String>(bandsName.toArray(new String[bandsName.size()]));
-		comboBand.setModel(comboModel);
 	}
 }

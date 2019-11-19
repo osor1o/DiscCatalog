@@ -25,4 +25,8 @@ public class Band extends Model {
 	public void setYear(int year) {
 		this.year = year;
 	}
+	
+	public String toString() {
+		return name;
+	}
 }
