@@ -80,9 +80,6 @@ public class MusicList extends JFrame {
 		contentPane.add(comboBand);
 		comboBand.addActionListener(listener);
 		
-		refreshTableData();
-		refreshComboBoxData();
-		
 		JLabel lblBanda = new JLabel("Banda");
 		lblBanda.setBounds(12, 12, 66, 15);
 		contentPane.add(lblBanda);
@@ -90,6 +87,9 @@ public class MusicList extends JFrame {
 		JLabel lblMusicas = new JLabel("Músicas");
 		lblMusicas.setBounds(12, 75, 66, 15);
 		contentPane.add(lblMusicas);
+		
+		refreshTableData();
+		refreshComboBoxData();
 	}
 	
 	public void refreshTableData() {

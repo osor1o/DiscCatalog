@@ -1,12 +1,11 @@
 import java.sql.SQLException;
 
-import view.BandList;
-import view.MusicList;
+import view.DiscList;
 
 public class Main {
 
 	public static void main(String[] args) {
-		MusicList frame = MusicList.getInstance();
+		DiscList frame = DiscList.getInstance();
 		frame.setVisible(true);
 	}
 
