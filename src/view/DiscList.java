@@ -11,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.BandDAO;
 import dao.DiscDAO;
-import dao.MusicDAO;
 import model.Band;
 import model.Disc;
 import model.Music;
@@ -36,6 +35,8 @@ public class DiscList extends JFrame {
 	private JButton btnAdd;
 	private JButton btnEdit;
 	private JButton btnRemove;
+	private JMenuItem menuBands;
+	private JMenuItem menuMusics;
 	private Listener listener = new Listener();
 
 	public static DiscList getInstance() {
@@ -56,17 +57,17 @@ public class DiscList extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu mnNewMenu = new JMenu("Menu");
-		menuBar.add(mnNewMenu);
+		JMenu menu = new JMenu("Menu");
+		menuBar.add(menu);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Discos");
-		mnNewMenu.add(mntmNewMenuItem);
+		menuMusics = new JMenuItem("Musicas");
+		menu.add(menuMusics);
+		menuMusics.addActionListener(listener);
 		
-		JMenuItem menuItem = new JMenuItem("Bandas");
-		mnNewMenu.add(menuItem);
+		menuBands = new JMenuItem("Bandas");
+		menu.add(menuBands);
+		menuBands.addActionListener(listener);
 		
-		JMenuItem mntmMusicas = new JMenuItem("Musicas");
-		mnNewMenu.add(mntmMusicas);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -110,8 +111,8 @@ public class DiscList extends JFrame {
 		lblBanda.setBounds(12, 12, 66, 15);
 		contentPane.add(lblBanda);
 		
-		refreshTableData();
 		refreshComboBoxData();
+		refreshTableData();
 	}
 	
 	public void refreshTableData() {
@@ -123,7 +124,6 @@ public class DiscList extends JFrame {
 			String[] row = {
 					String.valueOf(d.getId()),
 					d.getName(),
-					String.valueOf(d.getBand().getName()),
 					String.valueOf(d.getYear())
 			};
 			tableModel.addRow(row);
@@ -142,24 +142,51 @@ public class DiscList extends JFrame {
 	private class Listener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			int row = table.getSelectedRow();
+			
 			if(e.getSource() == comboBand) {
-				System.out.println("combo band");
+				band = (Band) comboBand.getSelectedItem();
+				refreshTableData();
 			}
 			
-			if(e.getSource() == btnShowMusics) {
-				System.out.println("show musics");
+			if(e.getSource() == btnShowMusics && row != -1) {
+				int id = Integer.parseInt(table.getValueAt(row, 0).toString());
+				String name = table.getValueAt(row, 1).toString();
+				int year = Integer.parseInt(table.getValueAt(row, 2).toString());
+				Disc disc = new Disc(id, name, year, band, null);
+				new DiscShow(disc);
 			}
 			
 			if(e.getSource() == btnAdd) {
-				System.out.println("add");
+				DiscAddEdit frame = DiscAddEdit.getInstance();
+				frame.setBand(band);
+				frame.setDisc(null);
+				frame.setVisible(true);
 			}
 			
-			if(e.getSource() == btnEdit) {
-				System.out.println("edit");
+			if(e.getSource() == btnEdit && row != -1) {
+				int id = Integer.parseInt(table.getValueAt(row, 0).toString());
+				String name = table.getValueAt(row, 1).toString();
+				int year = Integer.parseInt(table.getValueAt(row, 2).toString());
+				Disc disc = new Disc(id, name, year, band, null);
+				DiscAddEdit frame = DiscAddEdit.getInstance();
+				frame.setBand(band);
+				frame.setDisc(disc);
+				frame.setVisible(true);
 			}
 			
 			if(e.getSource() == btnRemove) {
 				System.out.println("remove");
+			}
+			
+			if(e.getSource() == menuMusics) {
+				MusicList frame = MusicList.getInstance();
+				frame.setVisible(true);
+			}
+			
+			if(e.getSource() == menuBands) {
+				BandList frame = BandList.getInstance();
+				frame.setVisible(true);
 			}
 		}
 	}

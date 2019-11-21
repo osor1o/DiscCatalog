@@ -35,4 +35,9 @@ public class Music extends Model {
 	public void setBand(Band band) {
 		this.band = band;
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 }

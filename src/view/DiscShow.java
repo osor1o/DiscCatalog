@@ -5,92 +5,61 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
-import javax.swing.JButton;
+import dao.MusicDAO;
+import model.Disc;
+import model.Music;
+import view.components.Table;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JList;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 
 public class DiscShow extends JFrame {
-
 	private JPanel contentPane;
 	private JTable table;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DiscList frame = new DiscList();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public DiscShow() {
+	private Disc disc;
+	
+	public DiscShow(Disc d) {
+		disc = d;
+		setResizable(false);
+		setTitle(d.getName() + " - " + d.getYear());
+		setVisible(true);
 		
-		this.setResizable(false);
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 205);
-		
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-		
-		JMenu mnNewMenu = new JMenu("Menu");
-		menuBar.add(mnNewMenu);
-		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Discos");
-		mnNewMenu.add(mntmNewMenuItem);
-		
-		JMenuItem menuItem = new JMenuItem("Bandas");
-		mnNewMenu.add(menuItem);
-		
-		JMenuItem mntmMusicas = new JMenuItem("Musicas");
-		mnNewMenu.add(mntmMusicas);
+		setBounds(100, 100, 699, 230);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel band = new JLabel("Nome: xxxxx, ano 2019");
-		band.setBounds(12, 12, 773, 15);
-		contentPane.add(band);
-		
 		JLabel musics = new JLabel("Musicas");
-		musics.setBounds(12, 39, 773, 15);
+		musics.setBounds(12, 12, 671, 15);
 		contentPane.add(musics);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 66, 773, 75);
+		scrollPane.setBounds(12, 39, 671, 152);
 		contentPane.add(scrollPane);
 		
-		table = new JTable();
+		table = new Table(null);
 		scrollPane.setViewportView(table);
+		refreshTableData();
+	}
+	
+	public void refreshTableData() {
+		String[] columns = {"id", "Nome", "Ano"};
+		DefaultTableModel tableModel = new DefaultTableModel(null, columns);
 		
-		String[] columns = {"Nome", "Banda", "Ano"};
-		String[][] rows = {
-				{"Teste", "teste", "teste"},
-				{"Teste", "teste", "teste"},
-				{"Teste", "teste", "teste"},
-				{"Teste", "teste", "teste"},
-				{"Teste", "teste", "teste"},
-				{"Teste", "teste", "teste"},
-		};
+		ArrayList<Music> musics = MusicDAO.list(disc);
+		for(Music m : musics) {
+			String[] row = {
+					String.valueOf(m.getId()),
+					m.getName(),
+					String.valueOf(m.getYear())
+			};
+			tableModel.addRow(row);
+		}
+		table.setModel(tableModel);
 	}
 }

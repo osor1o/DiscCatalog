@@ -1,59 +1,166 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.JComboBox;
 import javax.swing.JList;
-import javax.swing.JToggleButton;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
+
+import dao.MusicDAO;
+import model.Band;
+import model.Disc;
+import model.Music;
+
 import javax.swing.JLabel;
 
 public class DiscAddEdit extends JFrame {
-	private JTextField textField;
-	private JTextField textField_1;
+	private static DiscAddEdit instance;
+	private Disc disc;
+	private Band band;
+	private JTextField name;
+	private JTextField year;
+	private JButton btnAddEdit;
+	private JLabel lblBand;
+	private JList<Music> listMusics;
+	private JList<Music> listSelectedMusics;
+	private JButton btnAddMusic;
+	JButton btnRemoveMusic;
+	private Listener listener = new Listener();
 
+	public static DiscAddEdit getInstance() {
+		if(instance == null) {
+			instance = new DiscAddEdit();
+		}
+		return instance;
+	}
+	
 	public DiscAddEdit() {
-		setEnabled(false);
+		setTitle("Adicionar Disco");
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 400, 257);
+		setBounds(100, 100, 600, 309);
 		getContentPane().setLayout(null);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(12, 39, 372, 24);
-		getContentPane().add(comboBox);
-		
-		textField = new JTextField();
-		textField.setBounds(12, 102, 372, 19);
-		getContentPane().add(textField);
-		textField.setColumns(10);
-		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(12, 160, 372, 19);
-		getContentPane().add(textField_1);
-		
-		JLabel lblBand = new JLabel("Banda");
-		lblBand.setBounds(12, 12, 66, 15);
+		lblBand = new JLabel("Banda");
+		lblBand.setBounds(12, 12, 572, 15);
 		getContentPane().add(lblBand);
 		
-		JLabel lblName = new JLabel("Nome");
-		lblName.setBounds(12, 75, 66, 15);
-		getContentPane().add(lblName);
+		name = new JTextField();
+		name.setBounds(12, 66, 348, 19);
+		getContentPane().add(name);
+		name.setColumns(10);
 		
-		JLabel lblYear = new JLabel("Ano");
-		lblYear.setBounds(12, 133, 66, 15);
-		getContentPane().add(lblYear);
+		JLabel lblNome = new JLabel("Nome");
+		lblNome.setBounds(12, 39, 66, 15);
+		getContentPane().add(lblNome);
 		
-		JButton btnAdicionar = new JButton("Adicionar");
-		btnAdicionar.setBounds(270, 191, 114, 25);
-		getContentPane().add(btnAdicionar);
+		year = new JTextField();
+		year.setColumns(10);
+		year.setBounds(377, 66, 207, 19);
+		getContentPane().add(year);
+		
+		JLabel lblAno = new JLabel("Ano");
+		lblAno.setBounds(377, 39, 66, 15);
+		getContentPane().add(lblAno);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(12, 124, 216, 104);
+		getContentPane().add(scrollPane);
+		
+		listMusics = new JList<Music>();
+		scrollPane.setViewportView(listMusics);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(377, 124, 207, 104);
+		getContentPane().add(scrollPane_1);
+		
+		listSelectedMusics = new JList<Music>();
+		scrollPane_1.setViewportView(listSelectedMusics);
+		
+		JLabel lblMusicas = new JLabel("Musicas");
+		lblMusicas.setBounds(12, 97, 66, 15);
+		getContentPane().add(lblMusicas);
+		
+		btnAddMusic = new JButton(">>");
+		btnAddMusic.setBounds(240, 141, 120, 25);
+		getContentPane().add(btnAddMusic);
+		btnAddMusic.addActionListener(listener);
+		
+		btnRemoveMusic = new JButton("<<");
+		btnRemoveMusic.setBounds(240, 178, 120, 25);
+		getContentPane().add(btnRemoveMusic);
+		btnRemoveMusic.addActionListener(listener);
+		
+		btnAddEdit = new JButton("Adicionar");
+		btnAddEdit.setBounds(464, 245, 120, 25);
+		getContentPane().add(btnAddEdit);
+	}
+	
+	public void setDisc(Disc d) {
+		disc = d;
+		if(d != null) {
+			setTitle("Editar Disco");
+			btnAddEdit.setText("Editar");
+			name.setText(d.getName());
+			year.setText(String.valueOf(d.getYear()));
+		} else {
+			setTitle("Adicionar Disco");
+			btnAddEdit.setText("Adicionar");
+			name.setText("");
+			year.setText("");
+		}
+		refreshListSelectedMusics();
+	}
+	
+	public void setBand(Band b) {
+		band = b;
+		lblBand.setText("Banda: " + b.getName());
+	}
+	
+	public void refreshListSelectedMusics() {
+		DefaultListModel<Music> musicsModel = new DefaultListModel<Music>();
+		ArrayList<Music> musics = MusicDAO.list(disc);
+		for(Music m : musics) {
+			musicsModel.addElement(m);
+		}
+		listSelectedMusics.setModel(musicsModel);
+		refreshListMusics(musics);
+	}
+	
+	public void refreshListMusics(ArrayList<Music> selectedMusics) {
+		DefaultListModel<Music> musicsModel = new DefaultListModel<Music>();
+		ArrayList<Music> musics = MusicDAO.list(band);
+		HashMap<Integer, Music> mmap = new HashMap<Integer, Music>();
+		for(Music m : musics) {
+			mmap.put(m.getId(), m);
+		}
+		for(Music m : selectedMusics) {
+			mmap.remove(m.getId());
+		}
+		musics.clear();
+		musics.addAll(mmap.values());
+		for(Music m : musics) {
+			musicsModel.addElement(m);
+		}
+		listMusics.setModel(musicsModel);
+	}
+	
+	
+	private class Listener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(e.getSource() == btnAddMusic) {
+			}
+			
+			if(e.getSource() == btnRemoveMusic) {
+			}
+		}
 	}
 }

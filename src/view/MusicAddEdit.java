@@ -71,18 +71,17 @@ public class MusicAddEdit extends JFrame {
 			btnAddEdit.setText("Editar");
 			name.setText(m.getName());
 			year.setText(String.valueOf(m.getYear()));
-			lblBand.setText(m.getBand().getName());
 		} else {
 			setTitle("Adicionar Musica");
 			btnAddEdit.setText("Adicionar");
 			name.setText("");
 			year.setText("");
-			lblBand.setText("");
 		}
 	}
 	
 	public void setBand(Band b) {
 		band = b;
+		lblBand.setText("Banda: " + b.getName());
 	}
 	
 	private class Listener implements ActionListener {

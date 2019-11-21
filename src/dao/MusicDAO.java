@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import model.Band;
+import model.Disc;
 import model.Music;
 
 public class MusicDAO extends DAO {
@@ -26,7 +27,7 @@ public class MusicDAO extends DAO {
 		}
 	}
 	
-	public static ArrayList<Music> list(Band b)  {		
+	public static ArrayList<Music> list(Band b)  {
 		try {
 			String sql = "SELECT * FROM Music, Band WHERE Music.band = Band.id AND band = ? ORDER BY Music.name ASC";
 			PreparedStatement stmt = conn.prepareStatement(sql);
@@ -47,6 +48,36 @@ public class MusicDAO extends DAO {
 				name = rs.getString(2);
 				year = rs.getInt(3);
 				Music music = new Music(id, name, year, band);
+				musics.add(music);
+				
+			}
+			return musics;
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null, "Não foi possível buscar músicas!");
+			return null;
+		}
+	}
+	
+	public static ArrayList<Music> list(Disc d)  {		
+		try {
+			String sql = "SELECT Music.id, Music.name, Music.year\n" + 
+					"FROM MusicDisc, Disc, Music\n" + 
+					"WHERE MusicDisc.disc = Disc.id\n" + 
+					"AND MusicDisc.music = Music.id\n" + 
+					"AND MusicDisc.disc = ?;";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			if(d == null) {
+				stmt.setInt(1, 0);
+			} else {
+				stmt.setInt(1, d.getId());
+			}
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<Music> musics = new ArrayList<Music>();
+			while(rs.next()) {
+				int id = rs.getInt(1);
+				String name = rs.getString(2);
+				int year = rs.getInt(3);
+				Music music = new Music(id, name, year, null);
 				musics.add(music);
 				
 			}

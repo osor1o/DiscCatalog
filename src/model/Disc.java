@@ -1,12 +1,14 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Disc extends Model {
 	private String name;
-	private Band band;
 	private int year;
-	private Music[] musics;
+	private Band band;
+	private ArrayList<Music> musics;
 	
-	public Disc(int id, String name, int year, Band band, Music[] musics) {
+	public Disc(int id, String name, int year, Band band, ArrayList<Music> musics) {
 		this.id = id;
 		this.name = name;
 		this.band = band;
@@ -38,11 +40,11 @@ public class Disc extends Model {
 		this.year = year;
 	}
 
-	public Music[] getMusics() {
+	public ArrayList<Music> getMusics() {
 		return musics;
 	}
 
-	public void setMusics(Music[] musics) {
+	public void setMusics(ArrayList<Music> musics) {
 		this.musics = musics;
 	}
 }
