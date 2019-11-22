@@ -142,7 +142,7 @@ public class MusicList extends JFrame {
 					Music music = new Music(id, name, year, band);
 					MusicAddEdit editFrame = MusicAddEdit.getInstance();
 					editFrame.setMusic(music);
-					editFrame.setBand(null);
+					editFrame.setBand(band);
 					editFrame.setVisible(true);
 				}
 			}

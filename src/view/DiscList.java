@@ -176,7 +176,9 @@ public class DiscList extends JFrame {
 			}
 			
 			if(e.getSource() == btnRemove) {
-				System.out.println("remove");
+				int id = Integer.parseInt(table.getValueAt(row, 0).toString());
+				DiscDAO.remove(id);
+				refreshTableData();
 			}
 			
 			if(e.getSource() == menuMusics) {

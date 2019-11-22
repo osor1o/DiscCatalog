@@ -97,6 +97,8 @@ public class BandList extends JFrame {
 					int id = Integer.parseInt(table.getValueAt(row, 0).toString());
 					BandDAO.remove(id);
 					refreshData();
+					MusicList.getInstance().refreshComboBoxData();
+					DiscList.getInstance().refreshComboBoxData();
 				}
 			}
 		}

@@ -12,8 +12,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 
+import dao.DiscDAO;
 import dao.MusicDAO;
 import model.Band;
 import model.Disc;
@@ -101,6 +101,7 @@ public class DiscAddEdit extends JFrame {
 		btnAddEdit = new JButton("Adicionar");
 		btnAddEdit.setBounds(464, 245, 120, 25);
 		getContentPane().add(btnAddEdit);
+		btnAddEdit.addActionListener(listener);
 	}
 	
 	public void setDisc(Disc d) {
@@ -156,11 +157,35 @@ public class DiscAddEdit extends JFrame {
 	private class Listener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource() == btnAddMusic) {
+			DefaultListModel<Music> modelListSelectedMusics = (DefaultListModel<Music>) listSelectedMusics.getModel();
+			DefaultListModel<Music> modelListMusics = (DefaultListModel<Music>) listMusics.getModel();
+			
+			if(e.getSource() == btnAddMusic && listMusics.getSelectedIndex() != -1) {
+				modelListSelectedMusics.addElement(listMusics.getSelectedValue());
+				modelListMusics.remove(listMusics.getSelectedIndex());
 			}
 			
-			if(e.getSource() == btnRemoveMusic) {
+			if(e.getSource() == btnRemoveMusic && listSelectedMusics.getSelectedIndex() != -1) {
+				modelListMusics.addElement(listSelectedMusics.getSelectedValue());
+				modelListSelectedMusics.remove(listSelectedMusics.getSelectedIndex());
 			}
+			
+			if(e.getSource() == btnAddEdit) {
+				ArrayList<Music> musics = new ArrayList<Music>();
+				for(int i = 0; i < modelListSelectedMusics.getSize(); i++) {
+					musics.add(modelListSelectedMusics.get(i));
+				}
+				if(disc == null) {
+					DiscDAO.add(name.getText(), Integer.parseInt(year.getText()), band, musics);
+				} else {
+					DiscDAO.edit(disc.getId(), name.getText(), Integer.parseInt(year.getText()), band, musics);
+				}
+				setVisible(false);
+				DiscList.getInstance().refreshTableData();
+			}
+			
+			listSelectedMusics.setModel(modelListSelectedMusics);
+			listMusics.setModel(modelListMusics);
 		}
 	}
 }

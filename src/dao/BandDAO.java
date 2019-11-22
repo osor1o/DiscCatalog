@@ -1,6 +1,5 @@
 package dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import model.Band;
+import model.Disc;
 
 public class BandDAO extends DAO {
 
@@ -58,11 +58,35 @@ public class BandDAO extends DAO {
 	
 	public static void remove(int id) {
 		try {
-			PreparedStatement stmt = conn.prepareStatement("DELETE FROM Band WHERE id = ?");
+			PreparedStatement stmt = conn.prepareStatement("SELECT id, name, year FROM Band WHERE id = ?");
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			
+			Band band = null;
+			while(rs.next()) {
+				band = new Band(rs.getInt("id"), rs.getString("name"), rs.getInt("year"));
+			}
+			
+			for(Disc d : DiscDAO.list(band)) {
+				stmt = conn.prepareStatement("DELETE FROM MusicDisc WHERE disc = ?");
+				stmt.setInt(1, d.getId());
+				stmt.execute();
+				
+				stmt = conn.prepareStatement("DELETE FROM Disc WHERE id = ?");
+				stmt.setInt(1, d.getId());
+				stmt.execute();
+			}
+			
+			stmt = conn.prepareStatement("DELETE FROM Music WHERE band = ?");
+			stmt.setInt(1, id);
+			stmt.execute();
+			
+			stmt = conn.prepareStatement("DELETE FROM Band WHERE id = ?");
 			stmt.setInt(1, id);
 			stmt.execute();
 			JOptionPane.showMessageDialog(null, "Banda removida com sucesso!");
 		} catch(SQLException e) {
+			System.out.println(e);
 			JOptionPane.showMessageDialog(null, "Não foi possível remover a banda!");
 		}
 	}

@@ -87,6 +87,8 @@ public class BandAddEdit extends JFrame {
 			}
 			setVisible(false);
 			BandList.getInstance().refreshData();
+			MusicList.getInstance().refreshComboBoxData();
+			DiscList.getInstance().refreshComboBoxData();
 		}
 	}
 }
