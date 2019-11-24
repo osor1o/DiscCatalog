@@ -9,7 +9,7 @@ public class Database {
 	private Database() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			Database.connection = DriverManager.getConnection("jdbc:sqlite:storage.db");
+			Database.connection = DriverManager.getConnection("jdbc:sqlite::resource:storage.db");
 		} catch(Exception e) {
 			System.out.println("[Database Error] " + e);
 		}

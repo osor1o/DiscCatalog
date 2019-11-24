@@ -1,8 +1,9 @@
 package dao;
 
-public interface DAO<Model> {
-	public Model create();
-	public Model read();
-	public Model update();
-	public Model delete();
+import java.sql.Connection;
+
+import config.Database;
+
+public class DAO {
+	protected static Connection conn = Database.getConnection();
 }
