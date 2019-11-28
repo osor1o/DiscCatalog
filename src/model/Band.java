@@ -4,6 +4,7 @@ public class Band extends Model {
 	private String name;
 	private int year;
 	
+	// Construct
 	public Band(int id, String name, int year) {
 		this.id = id;
 		this.name = name;
