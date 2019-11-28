@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 public class Database {
 	private static Connection connection = null;
 	
+	// Construct
 	private Database() {
 		try {
 			Class.forName("org.sqlite.JDBC");
