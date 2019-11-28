@@ -8,6 +8,7 @@ public class Disc extends Model {
 	private Band band;
 	private ArrayList<Music> musics;
 	
+	// Construct
 	public Disc(int id, String name, int year, Band band, ArrayList<Music> musics) {
 		this.id = id;
 		this.name = name;
