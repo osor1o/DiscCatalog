@@ -1,5 +1,6 @@
 package model;
 
+// Not Construct
 public abstract class Model {
 	protected int id = 0;
 
