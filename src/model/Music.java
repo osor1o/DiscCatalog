@@ -5,6 +5,7 @@ public class Music extends Model {
 	private int year;
 	private Band band;
 	
+	// Construct
 	public Music(int id, String name, int year, Band band) {
 		this.id = id;
 		this.name = name;
